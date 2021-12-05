@@ -1,14 +1,18 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class DestroyedObject : MonoBehaviour
 {
+    [SerializeField] private DestroyedObjectSettings settings;
+
     [SerializeField] private int m_health;                  //health
     [SerializeField] private float Time_for_Destroy;        //time remaining befor deleting
     [SerializeField] private float Time_for_Unvisual;
     [SerializeField] private string m_tag;
     [SerializeField] private int m_damage;                  //damage for all
+    [SerializeField] private int m_Score;
     [SerializeField] private float min_velocity = 0.05f;    //speed difference for damage detection
     [SerializeField] private AudioClip a_clip;
 
@@ -17,8 +21,10 @@ public class DestroyedObject : MonoBehaviour
     [SerializeField] private bool Destroy_This = false;     //if that is true then destroy "this"
     [SerializeField] protected Rigidbody Rigidbody_visual;  //ссылка на физику визуальной части
     [SerializeField] protected GameObject Visual_object;    //¬изуальна€ составл€юща€ объекта
-
     private Collider m_collider;
+
+    public delegate void Death(int score);
+    public event Death death;
 
     //Timers
     private Timer Destroy_timer;
@@ -33,6 +39,11 @@ public class DestroyedObject : MonoBehaviour
         UnVisual_timer = new Timer(Time_for_Unvisual);
         Delay_for_Change_Tag = new Timer(2.0f);
         Delay_for_Change_Tag.starttimer();
+    }
+
+    protected virtual void Play_Death_Sound()
+    {
+        AudioPlayer.singleton.Play_Bird_death(0);
     }
 
     protected virtual void Update()
@@ -51,9 +62,11 @@ public class DestroyedObject : MonoBehaviour
             {
                 Destroy(Visual_object);
                 m_collider.enabled = false;
+                death?.Invoke(m_Score);
             }
             if (Destroy_timer.beep)
             {
+
                 Destroy(gameObject);
                 return;
             }

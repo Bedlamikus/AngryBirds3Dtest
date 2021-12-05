@@ -14,13 +14,16 @@ public class CameraMovement : MonoBehaviour
     [SerializeField] private float m_Right_Wall;
     [SerializeField] private float m_Bottom;
     [SerializeField] private float m_top;
+    [SerializeField] private float m_speed_Forward;
+    [SerializeField] private float m_speed_Backward;
     [SerializeField] private Transform StopLine;
     [SerializeField] private Transform StopPoint;
     private bool m_stop_mooving = false;
     private float ofs_y;
     private float ofs_z;
     private Transform m_transform;
-    private Quaternion deltaRotation;
+    private float m_speed = 1.0f;
+
     //private Transform target;
 
     void Update()
@@ -59,7 +62,11 @@ public class CameraMovement : MonoBehaviour
         {
             nx = StopPoint.position;
         }
-        transform.Translate((nx-transform.position) * Time.deltaTime);
+        if (nx.z - transform.position.z < 0)
+            m_speed = m_speed_Backward;
+        else
+            m_speed = m_speed_Forward;
+        transform.Translate((nx-transform.position) * Time.deltaTime*m_speed);
         cam.transform.localPosition = new Vector3(0,ofs_y,ofs_z);
     }
 }

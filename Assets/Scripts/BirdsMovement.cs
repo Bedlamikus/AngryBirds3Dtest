@@ -14,6 +14,7 @@ public class BirdsMovement : MonoBehaviour
     [SerializeField] private float m_radius = 0.5f;
     [SerializeField] private float m_min_radius = 0.5f;
     private AudioSource audio_player;
+    private bool m_pause = true;
 
 
     private Transform target_Bird_Transform;                    //this transform for Camera movement and infinity logic
@@ -42,6 +43,7 @@ public class BirdsMovement : MonoBehaviour
     }
     private void Update()
     {
+        if (m_pause) return;
         if (shooting == false)
         {
             if (Input.GetKeyDown(KeyCode.Space))
@@ -85,6 +87,16 @@ public class BirdsMovement : MonoBehaviour
             shooting = false;
             s_state_fly = false;
         }
+    }
+
+    public void Pause()
+    {
+        m_pause = true; 
+    }
+
+    public void UnPause()
+    {
+        m_pause = false;
     }
 
     public bool IsFlyBird()
@@ -140,6 +152,11 @@ public class BirdsMovement : MonoBehaviour
         b.transform.position = PositionForRebornBirds.position; //Set Bird position 
         b.gameObject.SetActive(false);                          //Hide Bird
         m_birds.Add(b);                                         //Add Bird in list with all birds
+    }
+
+    public void AddScore()
+    {
+        print("Adding Score");
     }
 
     //Reload ShootBoard weapon

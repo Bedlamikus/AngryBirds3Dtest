@@ -32,7 +32,7 @@ public class Bird : DestroyedObject
             if (m_fly)
             {
                 if (m_velocity <= m_min_velocity)
-                    Dead();
+                    Died();
             }
             else
             {
@@ -44,7 +44,7 @@ public class Bird : DestroyedObject
     }
 
 
-    private void Dead()
+    private void Died()
     {
         m_dead = true;
         SetDamage(GetHealth()+1);
